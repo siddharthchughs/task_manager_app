@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager_app/model/task_model.dart';
 
@@ -46,6 +45,41 @@ class _HomePage extends State<HomePageScreen> {
     );
   }
 
+  // void addTask() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: Text('Create New Task'),
+  //         content: Column(
+  //           children: [
+  //             TextField(
+  //               onSubmitted: (_) {
+  //                 if (content != null) {
+  //                   var newTask = TaskModel(
+  //                     title: content!,
+  //                     timeStamp: DateTime.now(),
+  //                     done: false,
+  //                   );
+  //                   boxContainer!.add(newTask.toMap());
+  //                   setState(() {
+  //                     content = null;
+  //                   });
+  //                   Navigator.pop(context);
+  //                 }
+  //               },
+  //               onChanged: (value) {
+  //                 content = value;
+  //               },
+  //             ),
+  //             TextButton(onPressed: () {}, child: Text('Submit')),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget _taskBody() {
     return FutureBuilder(
       future: Hive.openBox('tasks'),
@@ -81,10 +115,18 @@ class _HomePage extends State<HomePageScreen> {
               subtitle: Text(task.timeStamp.toString()),
               trailing: Icon(
                 task.done
-                    ? Icons.check_box_outline_blank_outlined
-                    : Icons.check_box,
+                    ? Icons.check_box_outlined
+                    : Icons.check_box_outline_blank_outlined,
                 color: Colors.green.shade700,
               ),
+              onTap: () {
+                task.done = !task.done;
+                boxContainer!.putAt(index, task.toMap());
+              },
+              onLongPress: () {
+                task.done = !task.done;
+                boxContainer!.deleteAt(index);
+              },
             );
           },
         );
